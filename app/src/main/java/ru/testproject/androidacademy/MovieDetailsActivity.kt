@@ -9,7 +9,7 @@ import android.widget.TextView
 class MovieDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_details)
+        setContentView(R.layout.fragment_movies_details)
 
         val backToMainActivity: TextView = findViewById(R.id.back_button_text)
         backToMainActivity.setOnClickListener { moveToTheMain() }

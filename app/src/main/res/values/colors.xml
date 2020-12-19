@@ -12,5 +12,6 @@
     <color name="textColorGray">#ECECEC</color>
     <color name="silver">#D8D8D8</color>
     <color name="pink">#FF3365</color>
-    <color name="silver_rating_bar">#6D6D80</color>
+    <color name="global_silver">#6D6D80</color>
+    <color name="movie_list_back">#191926</color>
 </resources>
