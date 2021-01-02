@@ -57,10 +57,10 @@ class MovieViewHolder(
         pgRating.setImageResource(movieData.ageRating)
         like.setImageResource(movieData.like)
         movieTitle.text = movieData.title
-        movieLength.text = "${movieData.length} MIN"
         movieRating.rating = movieData.userRating.toFloat()
-        reviewsCount.text = "${movieData.reviews} REVIEWS"
         tags.text = movieData.genres.joinToString(", ")
+        reviewsCount.text = "${movieData.reviews} REVIEWS"
+        movieLength.text = "${movieData.length} MIN"
 
         clickItem.setOnClickListener { movieClickListener.onMovieClick(movieData) }
     }
