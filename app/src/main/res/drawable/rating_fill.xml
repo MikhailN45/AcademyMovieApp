@@ -3,16 +3,16 @@
 
     <item android:state_pressed="true"
         android:state_window_focused="true"
-        android:drawable="@drawable/ic_ratingbar_activated"/>
+        android:drawable="@drawable/star_pink"/>
 
     <item android:state_focused="true"
         android:state_window_focused="true"
-        android:drawable="@drawable/ic_ratingbar_activated"/>
+        android:drawable="@drawable/star_pink"/>
 
     <item android:state_selected="true"
         android:state_window_focused="true"
-        android:drawable="@drawable/ic_ratingbar_activated"/>
+        android:drawable="@drawable/star_pink"/>
 
     <item
-        android:drawable="@drawable/ic_ratingbar_activated"/>
+        android:drawable="@drawable/star_pink"/>
 </selector>
