@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.testproject.androidacademy.data.MoviesData
+import ru.testproject.androidacademy.data.MovieData
 
 class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
-    private var movies: List<MoviesData> = listOf(
-        MoviesData(
+    private var movies: List<MovieData> = listOf(
+        MovieData(
             R.drawable.avengers_small,
             R.drawable.rating13,
             R.drawable.like,
@@ -22,7 +22,7 @@ class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
             125,
             listOf("Action", "Adventure", "Fantasy")
         ),
-        MoviesData(
+        MovieData(
             R.drawable.tenet,
             R.drawable.rating16,
             R.drawable.like,
@@ -32,7 +32,7 @@ class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
             98,
             listOf("Action", "Sci-Fi", "Thriller")
         ),
-        MoviesData(
+        MovieData(
             R.drawable.black_widow,
             R.drawable.rating13,
             R.drawable.like,
@@ -42,7 +42,7 @@ class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
             38,
             listOf("Action", "Adventure", "Sci-Fi")
         ),
-        MoviesData(
+        MovieData(
             R.drawable.superwoman,
             R.drawable.rating13,
             R.drawable.like,
@@ -73,7 +73,7 @@ class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onMovieClick(movie: MoviesData) {
+    override fun onMovieClick(movie: MovieData) {
         requireActivity().supportFragmentManager
             .beginTransaction()
             .add(

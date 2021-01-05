@@ -7,12 +7,12 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.testproject.androidacademy.data.MoviesData
+import ru.testproject.androidacademy.data.MovieData
 
 class AdapterMovieList(private val movieClickListener: MovieClickListener) :
     RecyclerView.Adapter<MovieViewHolder>() {
 
-    private var movieList: List<MoviesData> = listOf()
+    private var movieList: List<MovieData> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, ViewType: Int): MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -27,10 +27,10 @@ class AdapterMovieList(private val movieClickListener: MovieClickListener) :
     override fun getItemCount(): Int = movieList.size
 
     interface MovieClickListener {
-        fun onMovieClick(movie: MoviesData)
+        fun onMovieClick(movie: MovieData)
     }
 
-    fun setMovie(newMovie: List<MoviesData>) {
+    fun setMovie(newMovie: List<MovieData>) {
         movieList = newMovie
         notifyDataSetChanged()
     }
@@ -52,7 +52,7 @@ class MovieViewHolder(
     private val clickItem: View = movieItem.findViewById(R.id.movieClick)
 
 
-    fun bind(movieData: MoviesData) {
+    fun bind(movieData: MovieData) {
         movieBackground.setImageResource(movieData.poster)
         pgRating.setImageResource(movieData.ageRating)
         like.setImageResource(movieData.like)
