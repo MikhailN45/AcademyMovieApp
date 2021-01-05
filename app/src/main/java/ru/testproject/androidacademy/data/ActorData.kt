@@ -1,6 +1,6 @@
 package ru.testproject.androidacademy.data
 
-class ActorsData(
+class ActorData(
     val actorImage: Int,
     val actorName: String
 )

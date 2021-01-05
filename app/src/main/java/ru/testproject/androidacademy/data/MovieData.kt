@@ -1,6 +1,6 @@
 package ru.testproject.androidacademy.data
 
-data class MoviesData(
+data class MovieData(
     val poster: Int,
     val ageRating: Int,
     val like: Int,

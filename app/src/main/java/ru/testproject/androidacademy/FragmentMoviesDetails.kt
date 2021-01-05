@@ -6,27 +6,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.testproject.androidacademy.data.ActorsData
+import ru.testproject.androidacademy.data.ActorData
 
 class FragmentMoviesDetails : Fragment() {
-    private val actors: List<ActorsData> = listOf(
-        ActorsData(
+    private val actors: List<ActorData> = listOf(
+        ActorData(
             R.drawable.downey,
             "Robert Downey Jr."
         ),
-        ActorsData(
+        ActorData(
             R.drawable.evans,
             "Chris \nEvans"
         ),
-        ActorsData(
+        ActorData(
             R.drawable.ruffalo,
             "Mark Ruffalo"
         ),
-        ActorsData(
+        ActorData(
             R.drawable.hemsworth,
             "Chris Hemsworth"
         )
