@@ -42,14 +42,14 @@ private class JsonMovie(
     val adult: Boolean
 )
 
-private suspend fun loadGenres(context: Context): List<GenreData> = withContext(Dispatchers.IO) {
+private suspend fun loadGenres(context: Context): List<Genre> = withContext(Dispatchers.IO) {
     val data = readAssetFileToString(context, "genres.json")
     parseGenres(data)
 }
 
-internal fun parseGenres(data: String): List<GenreData> {
+internal fun parseGenres(data: String): List<Genre> {
     val jsonGenres = jsonFormat.decodeFromString<List<JsonGenre>>(data)
-    return jsonGenres.map { GenreData(id = it.id, name = it.name) }
+    return jsonGenres.map { Genre(id = it.id, name = it.name) }
 }
 
 private fun readAssetFileToString(context: Context, fileName: String): String {
@@ -57,18 +57,18 @@ private fun readAssetFileToString(context: Context, fileName: String): String {
     return stream.bufferedReader().readText()
 }
 
-private suspend fun loadActors(context: Context): List<ActorData> = withContext(Dispatchers.IO) {
+private suspend fun loadActors(context: Context): List<Actor> = withContext(Dispatchers.IO) {
     val data = readAssetFileToString(context, "people.json")
     parseActors(data)
 }
 
-internal fun parseActors(data: String): List<ActorData> {
+internal fun parseActors(data: String): List<Actor> {
     val jsonActors = jsonFormat.decodeFromString<List<JsonActor>>(data)
-    return jsonActors.map { ActorData(id = it.id, name = it.name, imageUrl = it.profilePicture) }
+    return jsonActors.map { Actor(id = it.id, name = it.name, picture = it.profilePicture) }
 }
 
 @Suppress("unused")
-internal suspend fun loadMovies(context: Context): List<MovieData> = withContext(Dispatchers.IO) {
+internal suspend fun loadMovies(context: Context): List<Movie> = withContext(Dispatchers.IO) {
     val genresMap = loadGenres(context)
     val actorsMap = loadActors(context)
 
@@ -78,9 +78,9 @@ internal suspend fun loadMovies(context: Context): List<MovieData> = withContext
 
 internal fun parseMovies(
     data: String,
-    genreData: List<GenreData>,
-    actors: List<ActorData>
-): List<MovieData> {
+    genreData: List<Genre>,
+    actors: List<Actor>
+): List<Movie> {
     val genresMap = genreData.associateBy { it.id }
     val actorsMap = actors.associateBy { it.id }
 
@@ -88,23 +88,22 @@ internal fun parseMovies(
 
     return jsonMovies.map { jsonMovie ->
         @Suppress("unused")
-        MovieData(
+        Movie(
             id = jsonMovie.id,
             title = jsonMovie.title,
-            storyLine = jsonMovie.overview,
-            imageUrl = jsonMovie.posterPicture,
-            detailImageUrl = jsonMovie.backdropPicture,
-            rating = (jsonMovie.ratings / 2).toInt(),
-            reviewCount = jsonMovie.votesCount,
-            pgAge = if (jsonMovie.adult) 16 else 13,
-            runningTime = jsonMovie.runtime,
+            overview = jsonMovie.overview,
+            poster = jsonMovie.posterPicture,
+            backdrop = jsonMovie.backdropPicture,
+            ratings = (jsonMovie.ratings / 2),
+            numberOfRatings = jsonMovie.votesCount,
+            minimumAge = if (jsonMovie.adult) 16 else 13,
+            runtime = jsonMovie.runtime,
             genres = jsonMovie.genreIds.map {
                 genresMap[it] ?: throw IllegalArgumentException("Genre not found")
             },
             actors = jsonMovie.actors.map {
                 actorsMap[it] ?: throw IllegalArgumentException("Actor not found")
-            },
-            isLiked = false
+            }
         )
     }
 }
