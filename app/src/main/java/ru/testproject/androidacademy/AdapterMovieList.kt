@@ -7,12 +7,14 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.testproject.androidacademy.data.MovieData
+import com.bumptech.glide.Glide
+import ru.testproject.androidacademy.data.Genre
+import ru.testproject.androidacademy.data.Movie
 
 class AdapterMovieList(private val movieClickListener: MovieClickListener) :
     RecyclerView.Adapter<MovieViewHolder>() {
 
-    private var movieList: List<MovieData> = listOf()
+    private var movieList: List<Movie> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, ViewType: Int): MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -27,10 +29,10 @@ class AdapterMovieList(private val movieClickListener: MovieClickListener) :
     override fun getItemCount(): Int = movieList.size
 
     interface MovieClickListener {
-        fun onMovieClick(movie: MovieData)
+        fun onMovieClick(movie: Movie)
     }
 
-    fun setMovie(newMovie: List<MovieData>) {
+    fun setMovie(newMovie: List<Movie>) {
         movieList = newMovie
         notifyDataSetChanged()
     }
@@ -38,11 +40,11 @@ class AdapterMovieList(private val movieClickListener: MovieClickListener) :
 }
 
 class MovieViewHolder(
-    movieItem: View,
+    private val movieItem: View,
     private val movieClickListener: AdapterMovieList.MovieClickListener
 ) : RecyclerView.ViewHolder(movieItem) {
     private val movieBackground: ImageView = movieItem.findViewById(R.id.movieBackground)
-    private val pgRating: ImageView = movieItem.findViewById(R.id.age_rating)
+    private val ageRating: ImageView = movieItem.findViewById(R.id.age_rating)
     private val like: ImageView = movieItem.findViewById(R.id.like)
     private val movieTitle: TextView = movieItem.findViewById(R.id.card_name)
     private val movieLength: TextView = movieItem.findViewById(R.id.minutes)
@@ -52,17 +54,28 @@ class MovieViewHolder(
     private val clickItem: View = movieItem.findViewById(R.id.movieClick)
 
 
-    fun bind(movieData: MovieData) {
-        movieBackground.setImageResource(movieData.poster)
-        pgRating.setImageResource(movieData.ageRating)
-        like.setImageResource(movieData.like)
-        movieTitle.text = movieData.title
-        movieRating.rating = movieData.userRating.toFloat()
-        tags.text = movieData.genres.joinToString(", ")
-        reviewsCount.text = "${movieData.reviews} REVIEWS"
-        movieLength.text = "${movieData.length} MIN"
+    fun bind(movie: Movie) {
+        Glide
+            .with(movieItem)
+            .load(movie.poster)
+            .into(movieBackground)
 
-        clickItem.setOnClickListener { movieClickListener.onMovieClick(movieData) }
+        ageRating.setImageResource(getAgeRatingImg(movie.minimumAge))
+        like.setImageResource(R.drawable.like)
+        movieTitle.text = movie.title
+        movieRating.rating = convertRating(movie.ratings)
+        tags.text = getTags(movie.genres)
+        reviewsCount.text = "${movie.numberOfRatings} REVIEWS"
+        movieLength.text = "${movie.runtime} MIN"
+
+        clickItem.setOnClickListener { movieClickListener.onMovieClick(movie) }
     }
+
+    private fun getTags(genres: List<Genre>): String = genres.joinToString(", ") { it.name }
+
+    private fun convertRating(ratings: Float): Float = ratings / 2.0f
+
+    private fun getAgeRatingImg(minimumAge: Int): Int =
+        if (minimumAge < 16) R.drawable.rating16 else R.drawable.rating13
 }
 
