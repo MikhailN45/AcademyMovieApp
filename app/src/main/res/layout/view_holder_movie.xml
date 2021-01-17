@@ -85,7 +85,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/reviews"
+        android:id="@+id/reviews_movie_card"
         style="@style/reviews"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
