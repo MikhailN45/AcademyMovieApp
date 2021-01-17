@@ -49,7 +49,7 @@ class MovieViewHolder(
     private val movieTitle: TextView = movieItem.findViewById(R.id.card_name)
     private val movieLength: TextView = movieItem.findViewById(R.id.minutes)
     private val movieRating: RatingBar = movieItem.findViewById(R.id.ratingBar)
-    private val reviewsCount: TextView = movieItem.findViewById(R.id.reviews)
+    private val reviewsCount: TextView = movieItem.findViewById(R.id.reviews_movie_card)
     private val tags: TextView = movieItem.findViewById(R.id.tagLine)
     private val clickItem: View = movieItem.findViewById(R.id.movieClick)
 
