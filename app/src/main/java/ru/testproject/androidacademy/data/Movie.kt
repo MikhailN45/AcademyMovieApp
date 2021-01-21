@@ -1,5 +1,7 @@
 package ru.testproject.androidacademy.data
 
+import ru.testproject.androidacademy.tmdb.Genre
+
 data class Movie(
     val id: Int,
     val title: String,
