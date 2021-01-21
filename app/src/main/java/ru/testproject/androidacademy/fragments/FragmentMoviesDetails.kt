@@ -7,17 +7,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RatingBar
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.testproject.androidacademy.AdapterMovieDetails
 import ru.testproject.androidacademy.R
-import ru.testproject.androidacademy.data.Genre
 import ru.testproject.androidacademy.data.Movie
 import ru.testproject.androidacademy.viewmodels.ViewModelMovieDetails
 import coil.load
+import kotlinx.serialization.ExperimentalSerializationApi
+import ru.testproject.androidacademy.databinding.FragmentMoviesDetailsBinding
+import ru.testproject.androidacademy.tmdb.Genre
 
 
 class FragmentMoviesDetails : Fragment() {
@@ -26,16 +27,9 @@ class FragmentMoviesDetails : Fragment() {
 
     private val movieDetailsViewModel: ViewModelMovieDetails by viewModels()
 
-    private var recyclerView: RecyclerView? = null
-    private var poster: ImageView? = null
-    private var title: TextView? = null
-    private var ageRating: TextView? = null
-    private var storyLine: TextView? = null
-    private var backButton: TextView? = null
-    private var tagLine: TextView? = null
-    private var reviewsCount: TextView? = null
-    private var ratingBar: RatingBar? = null
-
+    private var _binding: FragmentMoviesDetailsBinding? = null
+    private val binding: FragmentMoviesDetailsBinding
+        get() = _binding!!
 
     companion object {
         const val TAG = "MovieDetailsFragment"
@@ -54,31 +48,38 @@ class FragmentMoviesDetails : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_movies_details, container, false)
+    ): View {
+        _binding = FragmentMoviesDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    @ExperimentalSerializationApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val movieId = arguments?.getInt(MOVIE_ID)
-        initViews(view)
         movieDetailsViewModel.getMovie(movieId!!)
-        backButton?.setOnClickListener { onBackButtonCL?.onBackClick() }
+        binding.backButtonText.setOnClickListener { onBackButtonCL?.onBackClick() }
 
-        recyclerView?.let {
-            it.adapter = AdapterMovieDetails()
-            it.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.actorsRv.apply {
+            adapter = AdapterMovieDetails()
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
 
         movieDetailsViewModel.movieLiveData.observe(viewLifecycleOwner) { movie: Movie ->
-            poster?.load(movie.backdrop)
-            title?.text = movie.title
-            ageRating?.text = getAgeRating(movie.minimumAge)
-            storyLine?.text = movie.overview
-            ratingBar?.rating = convertRating(movie.ratings)
-            tagLine?.text = getTags(movie.genres)
+            binding.filmPoster.load(movie.backdrop)
+            binding.movieTitle.text = movie.title
+            binding.ageRating.text = getAgeRating(movie.minimumAge)
+            binding.storylineTv.text = movie.overview
+            binding.movieRatingBar.rating = convertRating(movie.ratings)
+            binding.movieGenres.text = getTags(movie.genres)
             val reviewsCountText = "${movie.numberOfRatings} REVIEWS"
-            reviewsCount?.text = reviewsCountText
+            binding.reviewsMovieCard.text = reviewsCountText
             if (movie.actors.isEmpty()) view.findViewById<TextView>(R.id.cast_title).visibility =
                 View.GONE
-            (recyclerView?.adapter as AdapterMovieDetails).updateActors(movie.actors)
+            (binding.actorsRv.adapter as AdapterMovieDetails).updateActors(movie.actors)
+        }
+        movieDetailsViewModel.loadingLiveData.observe(viewLifecycleOwner) {
+            view.findViewById<ProgressBar>(R.id.progressBar).visibility =
+                if (it) View.VISIBLE else View.GONE
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -106,26 +107,6 @@ class FragmentMoviesDetails : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        recyclerView = null
-        poster = null
-        title = null
-        tagLine = null
-        ageRating = null
-        storyLine = null
-        backButton = null
-        ratingBar = null
-        reviewsCount = null
-    }
-
-    private fun initViews(view: View) {
-        recyclerView = view.findViewById(R.id.actors_rv)
-        poster = view.findViewById(R.id.film_poster)
-        title = view.findViewById(R.id.movie_title)
-        tagLine = view.findViewById(R.id.movie_genres)
-        ageRating = view.findViewById(R.id.age_rating)
-        storyLine = view.findViewById(R.id.storyline_tv)
-        backButton = view.findViewById(R.id.back_button_text)
-        ratingBar = view.findViewById(R.id.movie_rating_bar)
-        reviewsCount = view.findViewById(R.id.reviews_movie_card)
+        _binding = null
     }
 }

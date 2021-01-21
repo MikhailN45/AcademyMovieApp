@@ -3,11 +3,10 @@ package ru.testproject.androidacademy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import ru.testproject.androidacademy.data.Actor
-import com.bumptech.glide.Glide
+import ru.testproject.androidacademy.databinding.ViewHolderActorBinding
 
 class AdapterMovieDetails : RecyclerView.Adapter<MovieDetailsViewHolder>() {
     private var actors: List<Actor> = listOf()
@@ -36,11 +35,10 @@ class AdapterMovieDetails : RecyclerView.Adapter<MovieDetailsViewHolder>() {
 }
 
 class MovieDetailsViewHolder(private val listItem: View) : RecyclerView.ViewHolder(listItem) {
-    private val actorName: TextView = listItem.findViewById(R.id.actorName)
-    private val actorImage: ImageView = listItem.findViewById(R.id.actorImage)
+    private val binding = ViewHolderActorBinding.bind(listItem)
 
     fun bind(actors: Actor) {
-        actorName.text = actors.name
-        Glide.with(listItem).load(actors.picture).into(actorImage)
+        binding.actorImage.load(actors.picture)
+        binding.actorName.text = actors.name
     }
 }

@@ -1,22 +1,26 @@
 package ru.testproject.androidacademy.fragments
 
-
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import ru.testproject.androidacademy.AdapterMovieList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import ru.testproject.androidacademy.R
+import ru.testproject.androidacademy.adapters.AdapterMovieList
 import ru.testproject.androidacademy.data.Movie
+import ru.testproject.androidacademy.data.getMoviesList
+import ru.testproject.androidacademy.databinding.FragmentMovieListBinding
 import ru.testproject.androidacademy.viewmodels.ViewModelMovieList
 
 class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
-    private var recyclerView: RecyclerView? = null
-    private var progressBar: View? = null
+    private var _binding: FragmentMovieListBinding? = null
+    private val binding: FragmentMovieListBinding get() = _binding!!
     private val movieListViewModel: ViewModelMovieList by viewModels()
 
     companion object {
@@ -28,27 +32,32 @@ class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_movie_list, container, false)
+    ): View {
+        _binding = FragmentMovieListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    @ExperimentalSerializationApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initViews(view)
+        CoroutineScope(Dispatchers.IO).launch {
+            val movies = getMoviesList()
+        }
         movieListViewModel.getMovies()
-        recyclerView?.let {
+        binding.moviesRv.let {
             it.layoutManager = GridLayoutManager(requireContext(), 2)
             it.adapter = AdapterMovieList(this)
         }
         movieListViewModel.movieListLiveData.observe(viewLifecycleOwner) {
-            (recyclerView?.adapter as AdapterMovieList).setMovie(it)
+            (binding.moviesRv.adapter as AdapterMovieList).setMovie(it)
         }
         movieListViewModel.loadingLiveData.observe(viewLifecycleOwner) {
-            progressBar?.visibility = if (it) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         }
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {
-        recyclerView = null
-        progressBar = null
+        _binding = null
         super.onDestroyView()
     }
 
@@ -62,10 +71,5 @@ class FragmentMoviesList : Fragment(), AdapterMovieList.MovieClickListener {
             )
             .addToBackStack(FragmentMoviesDetails.TAG)
             .commit()
-    }
-
-    private fun initViews(view: View) {
-        recyclerView = view.findViewById(R.id.movies_rv)
-        progressBar = view.findViewById(R.id.progressBar)
     }
 }

@@ -3,10 +3,11 @@ package ru.testproject.androidacademy.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import ru.testproject.androidacademy.data.Movie
-import ru.testproject.androidacademy.data.loadMovies
+import ru.testproject.androidacademy.data.getMoviesList
 
-class ViewModelMovieList(private val app: Application) : AndroidViewModel(app) {
+class ViewModelMovieList:ViewModel() {
     private var _movieListLiveData: MutableLiveData<List<Movie>> = MutableLiveData(emptyList())
     val movieListLiveData: LiveData<List<Movie>>
         get() = _movieListLiveData
@@ -14,11 +15,12 @@ class ViewModelMovieList(private val app: Application) : AndroidViewModel(app) {
     val loadingLiveData: LiveData<Boolean>
         get() = _loadingLiveData
 
+    @ExperimentalSerializationApi
     fun getMovies() {
         viewModelScope.launch {
-            _loadingLiveData.postValue(true)
-            _movieListLiveData.postValue(loadMovies(app.applicationContext))
-            _loadingLiveData.postValue(false)
+            _loadingLiveData.value = true
+            _movieListLiveData.value = getMoviesList()
+            _loadingLiveData.value = false
         }
     }
 }
